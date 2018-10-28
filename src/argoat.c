@@ -3,20 +3,22 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+// executes the function for unflagged pars
 void argoat_unflagged_sacrifice(const struct argoat* args)
 {
-	int len = args->sprigs_count;
-
-	args->sprigs[len].func(args->sprigs[len].data,
+	args->sprigs[0].func(args->sprigs[0].data,
 		args->unflagged,
 		args->unflagged_count);
 }
 
+// returns 1 to increment the pars counter if the one given is flagged
+// otherwise we store the unflagged par in the buffer and return 0
 int argoat_increment_pars(struct argoat* args, char* flag, char* pars)
 {
 	// unflagged pars
 	if (flag == NULL)
 	{
+		// tests bounds and saves
 		int count = args->unflagged_count;
 
 		if (count < args->unflagged_max)
@@ -27,6 +29,7 @@ int argoat_increment_pars(struct argoat* args, char* flag, char* pars)
 
 		return 0;
 	}
+	// flagged pars
 	else
 	{
 		return 1;
@@ -45,9 +48,9 @@ void argoat_sacrifice(struct argoat* args,
 		return;
 	}
 
-	// searches for an equal sign
-	char* eq = strchr(flag, '=');
+	// handles flags with '='
 	int flag_len;
+	char* eq = strchr(flag, '=');
 
 	if (eq != NULL)
 	{
@@ -55,17 +58,19 @@ void argoat_sacrifice(struct argoat* args,
 	}
 	else
 	{
-		// false-positive warning
-		flag_len = strlen(flag);
+		flag_len = strlen(flag); // safe
 	}
 
 	// searches the tag in the argoat structure
-	int i = 0;
+	// we initialize i to 1 to skip the programm execution command
+	int i = 1;
 	int len = args->sprigs_count;
 
 	while(i < len)
 	{
-		if (strncmp(args->sprigs[i].flag, flag, flag_len) == 0)
+		// as we use strncmp we must test the sizes to avoid collisions
+		if ((strncmp(args->sprigs[i].flag, flag, flag_len) == 0)
+		&& (((int) strlen(args->sprigs[i].flag)) == flag_len)) // safe
 		{
 			break;
 		}
@@ -79,32 +84,40 @@ void argoat_sacrifice(struct argoat* args,
 		return;
 	}
 
-	// maximum number of pars, changed to 1 if an '=' is detected
-	int max = args->sprigs[i].pars_max;
+	// handles flags with '='
+	// maximum number of pars passed to the function
+	int max;
 
-	// handles equal chars
 	if (eq != NULL)
 	{
-		// moves past the equal char
+		// moves past the '=' char
 		++eq; 
 		// moves the pars pointer to the flag
 		--pars;
+
+		// flag with '=' means we wave an additionnal parameter
 		++pars_count;
-		// copies the par following '=' at the beginning of the flag
-		// false-positive warning
-		memcpy(pars[0], eq, strlen(eq) + 1);
+		// which will be the only one (the others are left unflagged)
 		max = 1;
+
+		// copies the par following '=' at the beginning of the flag
+		memcpy(pars[0], eq, strlen(eq) + 1); // safe
+	}
+	else
+	{
+		max = args->sprigs[i].pars_max;
 	}
 
-	// if there are more parameters here than the maximum
-	// we save them to the unflagged buffer
+	// saves pars exceeding the limit
 	if (pars_count > max)
 	{
 		for(int k = max; k < pars_count; ++k)
 		{
+			// leverages the pars incrementation side-effects
 			argoat_increment_pars(args, NULL, pars[k]);
 		}
 
+		// fixes the number of pars given to the function
 		pars_count = max;
 	}
 
@@ -115,11 +128,14 @@ void argoat_sacrifice(struct argoat* args,
 // executes functions without pars for compound tags
 void argoat_compound(struct argoat* args, char** pars)
 {
+	// currently processed char/flag
 	int scroll = 1;
-	// strange warning
-	char flag[2];
+	char flag[2]; // safe
+
 	flag[1] = '\0';
 
+	// if this function is excuted this means there is at least one flag
+	// therefore it is safe to test the condition for the next char only
 	do
 	{
 		flag[0] = pars[0][scroll];
@@ -132,16 +148,20 @@ void argoat_compound(struct argoat* args, char** pars)
 // executes functions with pars for each flag
 void argoat_graze(struct argoat* args, int argc, char** argv)
 {
+	int pars_count = 0;
 	char** pars = NULL;
 	char* flag = NULL;
-	int pars_count = 0;
 	char dash;
 
-	// sets the unflagged zone past the end
-	args->unflagged = argv + argc;
+	// skips the program execution command
+	++argv;
+	--argc;
 
+	// identifies every element in argv and executes the right
+	// handling functions during the process
 	for (int i = 0; i < argc; ++i)
 	{
+		// will be tested to identify lone dashes and long flags
 		dash = argv[i][1];
 
 		// pars
@@ -206,5 +226,6 @@ void argoat_graze(struct argoat* args, int argc, char** argv)
 
 	// we call the function corresponding to the last flag
 	argoat_sacrifice(args, flag, pars, pars_count);
+	// we call the function handling unflagged pars
 	argoat_unflagged_sacrifice(args);
 }

@@ -50,17 +50,17 @@ int main(int argc, char** argv)
 
 	char* unflagged[10];
 
-	const struct argoat_sprig sprigs[] =
+	const struct argoat_sprig sprigs[4] =
 	{
+		{NULL, 0, (void*) data4, handle_main},
 		{"waaa", 1, (void*) &data1, handle_arg_w},
 		{"t", 2, (void*) &data2, handle_arg_t},
 		{"f", 1, (void*) &data3, handle_arg_f},
-		{"-", 0, (void*) data4, handle_main}
 	};
 
-	struct argoat args = {sprigs, 3, unflagged, 0, 10};
+	struct argoat args = {sprigs, 4, unflagged, 0, 10};
 
-	argoat_graze(&args, --argc, ++argv);
+	argoat_graze(&args, argc, argv);
 	
 	// do some stuff
 	printf("w-flag boolean: %d\n", data1);
