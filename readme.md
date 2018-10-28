@@ -29,7 +29,7 @@ Don't be shy, sneak a goat in your code.
 Run `make` to compile example executables an perform basic testing.
 
 # Using
-tl;dr
+## TL;DR
 ```
 #include "argoat.h"
 #include <stdbool.h>
@@ -63,6 +63,7 @@ int main(int argc, char** argv)
 }
 ```
 
+## Details
 Include `argoat.h` and compile `argoat.c` with your code.
 
 Write the functions that will handle your parameters.
