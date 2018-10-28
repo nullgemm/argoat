@@ -16,6 +16,6 @@ functest () {
 }
 
 summary () {
-	echo "$ok tests passed"
-	echo "$fail tests failed"
+	echo "> $ok tests passed"
+	echo "> $fail tests failed"
 }

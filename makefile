@@ -8,7 +8,8 @@ TEST = test
 INCL = -I$(SRCD)
 
 TESTS = $(BIND)/test1
-# TESTS+= $(BIND)/test2
+TESTS+= $(BIND)/test2
+TESTS+= $(BIND)/test3
 
 .PHONY: all
 all: $(TESTS) run
@@ -25,6 +26,8 @@ $(BIND)/test%: $(OBJD)/$(SRCD)/argoat.o $(OBJD)/$(TEST)/test%.o
 
 run:
 	./$(TEST)/test1.sh
+	./$(TEST)/test2.sh
+	./$(TEST)/test3.sh
 
 clean:
 	@echo "cleaning workspace"
