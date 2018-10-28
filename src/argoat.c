@@ -1,33 +1,7 @@
-#include <stdbool.h>
+#include "argoat.h"
 #include <string.h>
-#include <stdio.h>
 #include <stdlib.h>
-
-// flag-processor
-struct argoat_sprig
-{
-	// dash-prefixed option
-	const char* flag;
-	// maximum pars
-	const int pars_max;
-	// pre-loaded data for the function
-	void* data;
-	// function executed upon detection
-	void (* const func)(void* data, char** pars, const int pars_count);
-};
-
-// main structure
-struct argoat
-{
-	// the flags-processor list, with handling functions etc.
-	const struct argoat_sprig* sprigs;
-	// size of the list above
-	const int sprigs_count;
-	// unflagged tags buffer
-	char** unflagged;
-	int unflagged_count;
-	int unflagged_max;
-};
+#include <stdbool.h>
 
 void argoat_unflagged_sacrifice(const struct argoat* args)
 {
@@ -45,7 +19,7 @@ int argoat_increment_pars(struct argoat* args, char* flag, char* pars)
 	{
 		int count = args->unflagged_count;
 
-		if (count < args->unflagged_max);
+		if (count < args->unflagged_max)
 		{
 			args->unflagged[count] = pars;
 			++args->unflagged_count;
@@ -233,74 +207,4 @@ void argoat_graze(struct argoat* args, int argc, char** argv)
 	// we call the function corresponding to the last flag
 	argoat_sacrifice(args, flag, pars, pars_count);
 	argoat_unflagged_sacrifice(args);
-}
-
-// user-defined handling functions
-void handle_arg_w(void* data, char** pars, const int pars_count)
-{
-	if (pars_count > 0)
-	{
-		*((bool*) data) = (strcmp(pars[0], "what") == 0);
-	}
-}
-
-void handle_arg_t(void* data, char** pars, const int pars_count)
-{
-	if (pars_count > 1)
-	{
-		// false-positive warning
-		*((int*) data) = atoi(pars[0]) + atoi(pars[1]);
-	}
-}
-
-void handle_arg_f(void* data, char** pars, const int pars_count)
-{
-	if (pars_count > 0)
-	{
-		*((char**) data) = pars[0];
-	}
-}
-
-void handle_main(void* data, char** pars, const int pars_count)
-{
-	if (pars_count > 2)
-	{
-		((char**) data)[0] = pars[0]; // strange warning
-		((char**) data)[1] = pars[1]; // strange warning
-		((char**) data)[2] = pars[2]; // strange warning
-	}
-}
-
-// example usage
-int main(int argc, char** argv)
-{
-	bool data1 = false;
-	int data2 = 0;
-	char* data3 = NULL;
-	char* data4[3];
-
-	char* unflagged[10];
-
-	const struct argoat_sprig sprigs[] =
-	{
-		{"waaa", 1, (void*) &data1, handle_arg_w},
-		{"t", 2, (void*) &data2, handle_arg_t},
-		{"f", 1, (void*) &data3, handle_arg_f},
-		{"-", 0, (void*) data4, handle_main}
-	};
-
-	struct argoat args = {sprigs, 3, unflagged, 0, 10};
-
-	argoat_graze(&args, --argc, ++argv);
-	
-	// do some stuff
-	printf("w-flag boolean: %d\n", data1);
-	printf("t-flag integer: %d\n", data2);
-	printf("f-flag string:  \"%s\"\n", data3 ? data3 : "");
-
-	printf("main string: %s\n", data4[0]);
-	printf("main string: %s\n", data4[1]);
-	printf("main string: %s\n", data4[2]);
-
-	return 0;
 }
