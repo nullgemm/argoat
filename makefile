@@ -1,5 +1,5 @@
 CC = gcc
-FLAGS = -std=c99 -pedantic -Wall -Wextra -Werror=vla -Werror -g
+FLAGS = -std=c99 -pedantic -Wall -Wno-unused-parameter -Wextra -Werror=vla -Werror -g
 
 BIND = bin
 OBJD = obj
@@ -10,8 +10,8 @@ INCL = -I$(SRCD)
 TESTS = $(BIND)/test1
 # TESTS+= $(BIND)/test2
 
-.PHONY:all
-all: $(TESTS)
+.PHONY: all
+all: $(TESTS) run
 
 $(OBJD)/%.o: %.c
 	@echo "building source object $@"
@@ -22,6 +22,9 @@ $(BIND)/test%: $(OBJD)/$(SRCD)/argoat.o $(OBJD)/$(TEST)/test%.o
 	@echo "compiling $@"
 	@mkdir -p $(BIND)
 	@$(CC) $(INCL) $(FLAGS) -o $@ $^
+
+run:
+	./$(TEST)/test1.sh
 
 clean:
 	@echo "cleaning workspace"
