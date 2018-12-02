@@ -24,7 +24,7 @@ All of that in around 200 lines of code (getopt has approximately 700).
 Don't be shy, sneak a goat in your code.
 
 # Testing
-Run `make` to compile example executables an perform basic testing.
+Run `make` to compile example executables and perform basic testing.
 
 # Using
 ## TL;DR
