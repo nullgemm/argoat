@@ -1,5 +1,3 @@
-![logo](res/logo/mini.png)
-
 # Argoat
 Argoat is a lightweight library for command-line options parsing.
 This was created because most of the existing solutions rely heavily on macros,
@@ -126,6 +124,3 @@ And using the configured data
 ```
 printf("%c\n", data1 ? '1' : '0');
 ```
-
-# Greetings
-Wilber, Tux, Beastie.
