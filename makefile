@@ -14,6 +14,7 @@ BINS+= $(BIND)/argoat_sample_2
 BINS+= $(BIND)/argoat_sample_3
 
 INCL = -I$(SRCD) -I$(SUBD)/testoasterror/src
+DEP = $(SUBD)/testoasterror/src/testoasterror.h
 
 $(OBJD)/%.o: %.c
 	@echo "building object $@"
@@ -22,12 +23,15 @@ $(OBJD)/%.o: %.c
 
 all: $(BINS) $(BIND)/$(NAME)
 
-$(BIND)/argoat_sample_%: $(OBJD)/$(SRCD)/argoat.o $(OBJD)/$(TEST)/argoat_sample_%.o
+$(DEP):
+	@git submodule update --init --recursive
+
+$(BIND)/argoat_sample_%: $(DEP) $(OBJD)/$(SRCD)/argoat.o $(OBJD)/$(TEST)/argoat_sample_%.o
 	@echo "compiling executable $@"
 	@mkdir -p $(@D)
 	@$(CC) -o $@ $^ $(LINK)
 
-$(BIND)/$(NAME): $(OBJD)/$(TEST)/main.o $(OBJD)/$(SUBD)/testoasterror/src/testoasterror.o
+$(BIND)/$(NAME): $(DEP) $(OBJD)/$(TEST)/main.o $(OBJD)/$(SUBD)/testoasterror/src/testoasterror.o
 	@echo "compiling executable $@"
 	@mkdir -p $(@D)
 	@$(CC) -o $@ $^ $(LINK)
