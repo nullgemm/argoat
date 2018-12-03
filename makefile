@@ -21,17 +21,17 @@ $(OBJD)/%.o: %.c
 	@mkdir -p $(@D)
 	@$(CC) $(INCL) $(FLAGS) -c -o $@ $<
 
-all: $(BINS) $(BIND)/$(NAME)
+all: $(DEP) $(BINS) $(BIND)/$(NAME)
 
 $(DEP):
 	@git submodule update --init --recursive
 
-$(BIND)/argoat_sample_%: $(DEP) $(OBJD)/$(SRCD)/argoat.o $(OBJD)/$(TEST)/argoat_sample_%.o
+$(BIND)/argoat_sample_%: $(OBJD)/$(SRCD)/argoat.o $(OBJD)/$(TEST)/argoat_sample_%.o
 	@echo "compiling executable $@"
 	@mkdir -p $(@D)
 	@$(CC) -o $@ $^ $(LINK)
 
-$(BIND)/$(NAME): $(DEP) $(OBJD)/$(TEST)/main.o $(OBJD)/$(SUBD)/testoasterror/src/testoasterror.o
+$(BIND)/$(NAME): $(OBJD)/$(TEST)/main.o $(OBJD)/$(SUBD)/testoasterror/src/testoasterror.o
 	@echo "compiling executable $@"
 	@mkdir -p $(@D)
 	@$(CC) -o $@ $^ $(LINK)
