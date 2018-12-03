@@ -1,4 +1,4 @@
-#include "../src/argoat.h"
+#include "argoat.h"
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>

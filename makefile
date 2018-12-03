@@ -1,34 +1,40 @@
+NAME = test
 CC = gcc
-FLAGS = -std=c99 -pedantic -Wall -Wno-unused-parameter -Wextra -Werror=vla -Werror -g
+FLAGS = -std=c99 -pedantic -g
+FLAGS+= -Wall -Wextra -Werror=vla -Werror -Wno-unused-parameter
 
 BIND = bin
 OBJD = obj
+SUBD = sub
 SRCD = src
 TEST = test
-INCL = -I$(SRCD)
 
-TESTS = $(BIND)/test1
-TESTS+= $(BIND)/test2
-TESTS+= $(BIND)/test3
+BINS = $(BIND)/argoat_sample_1
+BINS+= $(BIND)/argoat_sample_2
+BINS+= $(BIND)/argoat_sample_3
 
-.PHONY: all
-all: $(TESTS) run
+INCL = -I$(SRCD) -I$(SUBD)/testoasterror/src
 
 $(OBJD)/%.o: %.c
-	@echo "building source object $@"
+	@echo "building object $@"
 	@mkdir -p $(@D)
 	@$(CC) $(INCL) $(FLAGS) -c -o $@ $<
 
-$(BIND)/test%: $(OBJD)/$(SRCD)/argoat.o $(OBJD)/$(TEST)/test%.o
-	@echo "compiling $@"
-	@mkdir -p $(BIND)
-	@$(CC) $(INCL) $(FLAGS) -o $@ $^
+all: $(BINS) $(BIND)/$(NAME)
+
+$(BIND)/argoat_sample_%: $(OBJD)/$(SRCD)/argoat.o $(OBJD)/$(TEST)/argoat_sample_%.o
+	@echo "compiling executable $@"
+	@mkdir -p $(@D)
+	@$(CC) -o $@ $^ $(LINK)
+
+$(BIND)/$(NAME): $(OBJD)/$(TEST)/main.o $(OBJD)/$(SUBD)/testoasterror/src/testoasterror.o
+	@echo "compiling executable $@"
+	@mkdir -p $(@D)
+	@$(CC) -o $@ $^ $(LINK)
 
 run:
-	./$(TEST)/test1.sh
-	./$(TEST)/test2.sh
-	./$(TEST)/test3.sh
+	@cd $(BIND) && ./$(NAME)
 
 clean:
-	@echo "cleaning workspace"
+	@echo "cleaning"
 	@rm -rf $(BIND) $(OBJD)
