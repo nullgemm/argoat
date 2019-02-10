@@ -1,0 +1,3 @@
+[submodule "sub/testoasterror"]
+	path = sub/testoasterror
+	url = https://git.cylgom.net/cylgom/testoasterror.git

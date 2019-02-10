@@ -42,3 +42,15 @@ run:
 clean:
 	@echo "cleaning"
 	@rm -rf $(BIND) $(OBJD)
+
+github:
+	@echo "sourcing submodules from https://github.com"
+	@cp .github .gitmodules
+	@git submodule sync
+	@git submodule update --init --recursive --remote
+
+gitea:
+	@echo "sourcing submodules from https://git.cylgom.net"
+	@cp .gitea .gitmodules
+	@git submodule sync
+	@git submodule update --init --recursive --remote<Paste>

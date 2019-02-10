@@ -23,13 +23,13 @@ Argoat does not support the following syntaxes *on purpose*:
 All of that in around 200 lines of code (getopt has approximately 700).
 Don't be shy, sneak a goat in your code.
 
-# Testing
+## Testing
 Run `make` to compile the testing suite, and `make run` to perform the tests.
 If you did not `clone` with `--recurse-submodules`, the `testoasterror` dependency
 will be initialized automatically.
 
-# Using
-## TL;DR
+## Using
+### TL;DR
 ```
 #include "argoat.h"
 #include <stdbool.h>
@@ -63,7 +63,7 @@ int main(int argc, char** argv)
 }
 ```
 
-## Details
+### Details
 Include `argoat.h` and compile `argoat.c` with your code.
 
 Write the functions that will handle your parameters.
