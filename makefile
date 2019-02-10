@@ -53,4 +53,4 @@ gitea:
 	@echo "sourcing submodules from https://git.cylgom.net"
 	@cp .gitea .gitmodules
 	@git submodule sync
-	@git submodule update --init --recursive --remote<Paste>
+	@git submodule update --init --recursive --remote
