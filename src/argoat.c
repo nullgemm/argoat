@@ -227,5 +227,8 @@ void argoat_graze(struct argoat* args, int argc, char** argv)
 	// we call the function corresponding to the last flag
 	argoat_sacrifice(args, flag, pars, pars_count);
 	// we call the function handling unflagged pars
-	argoat_unflagged_sacrifice(args);
+	if (args->unflagged_max > 0)
+	{
+		argoat_unflagged_sacrifice(args);
+	}
 }
