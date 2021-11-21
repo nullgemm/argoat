@@ -43,14 +43,9 @@ clean:
 	@echo "cleaning"
 	@rm -rf $(BIND) $(OBJD)
 
+gitea: github
 github:
-	@echo "sourcing submodules from https://github.com"
-	@cp .github .gitmodules
+	@echo "sourcing submodules"
 	@git submodule sync
 	@git submodule update --init --recursive --remote
 
-gitea:
-	@echo "sourcing submodules from personal server"
-	@cp .gitea .gitmodules
-	@git submodule sync
-	@git submodule update --init --recursive --remote
