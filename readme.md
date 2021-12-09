@@ -24,8 +24,7 @@ All of that in around 200 lines of code (getopt has approximately 700).
 Don't be shy, sneak a goat in your code.
 
 ## Cloning
-Execute `make gitea` or `make github` to initialize the required submodules
-(depending on where you cloned this repo from).
+Clone with `--recurse-submodules` to get the required submodules.
 
 ## Testing
 Run `make` to compile the testing suite, and `make run` to perform the tests.
